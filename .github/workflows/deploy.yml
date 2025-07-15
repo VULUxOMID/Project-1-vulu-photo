@@ -1,9 +1,10 @@
-name: 🚀 Deploy to Hostinger
+name: 🚀 Deploy to Hostinger (DISABLED)
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch: # Only manual triggers for now
 
 jobs:
   deploy:
