@@ -1,55 +1,33 @@
-name: Deploy to Hostinger
+name: 🚀 Deploy to Hostinger
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allow manual trigger
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
 
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
+      - name: ⚙️ Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 20
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: 🏗️ Build and export site
-        run: |
-          npm run build
-        env:
-          # Add any environment variables needed for build
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
-          NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
-          NEXT_PUBLIC_FORMSPREE_FORM_ID: ${{ secrets.NEXT_PUBLIC_FORMSPREE_FORM_ID }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      - name: 🛠 Build project
+        run: npm run build
 
-      - name: 📤 Deploy to Hostinger via FTP
+      - name: 📤 Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./out/
-          server-dir: /public_html/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            .env*
-            .DS_Store
-
-      - name: ✅ Deployment Success
-        run: |
-          echo "🎉 Site successfully deployed to https://subjectphoto.com"
-          echo "📅 Deployed at: $(date)" 
+          local-dir: ./out
+          server-dir: / 
